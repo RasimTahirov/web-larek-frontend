@@ -15,7 +15,7 @@ export interface IAppState {
 }
 
 export interface IPayment {
-	paymentMethod: string;
+	payment: string;
 	address: string;
 }
 
@@ -24,7 +24,15 @@ export interface IContacts {
 	phone: string;
 }
 
-export interface IBasket extends IPayment, IContacts {
+export interface IOrder {
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	items: string []
+}
+
+export interface IBasket  {
 	items: IProduct[];
 	total: number;
 }
@@ -48,5 +56,11 @@ export interface IAction {
 	onClick: (event: MouseEvent) => void;
 }
 
-export type FormErrors = Partial<Record<keyof IContacts, string>>;
+export interface IProductAPI {
+	getProductById: (id: string) => Promise<IProduct>;
+	getProductList: () => Promise<IProduct[]>;
+	createOrder: (order: IOrder) => Promise<SuccessfulOrder>;
+}
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
 export type Category = 'софт-скилл | другое | дополнительное | кнопка';
