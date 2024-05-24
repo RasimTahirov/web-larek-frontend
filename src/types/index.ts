@@ -5,6 +5,8 @@ export interface IProduct {
 	title: string;
 	category?: string;
 	price: number;
+	index?: number;
+	quantity?: number;
 }
 
 export interface IAppState {
@@ -19,7 +21,7 @@ export interface IPayment {
 	address: string;
 }
 
-export interface IContacts {
+export interface IContacts extends IPayment, IOrder {
 	email: string;
 	phone: string;
 }
@@ -29,12 +31,19 @@ export interface IOrder {
 	address: string;
 	email: string;
 	phone: string;
-	items: string []
+	items: string[];
+	total: number;
 }
 
-export interface IBasket  {
+export interface IBasket {
 	items: IProduct[];
 	total: number;
+}
+
+export interface IBasketItems {
+	items: HTMLElement[];
+	title: string;
+	price: string;
 }
 
 export interface SuccessfulOrder {
@@ -56,11 +65,13 @@ export interface IAction {
 	onClick: (event: MouseEvent) => void;
 }
 
-export interface IProductAPI {
-	getProductById: (id: string) => Promise<IProduct>;
-	getProductList: () => Promise<IProduct[]>;
-	createOrder: (order: IOrder) => Promise<SuccessfulOrder>;
+export interface IFormValid {
+	valid: boolean;
 }
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-export type Category = 'софт-скилл | другое | дополнительное | кнопка';
+export type Category =
+	| 'софт-скил'
+	| 'другое'
+	| 'дополнительное'
+	| 'кнопка'
+	| 'хард-скил';

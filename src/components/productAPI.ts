@@ -1,13 +1,13 @@
-import { Api, ApiListResponse } from "./base/api";
-import { IProduct, IOrder, SuccessfulOrder } from "../types";
+import { Api, ApiListResponse } from './base/api';
+import { IProduct, IOrder, SuccessfulOrder } from '../types';
 
-export interface ProductAPI {
+export interface ProductService {
 	getProductById: (id: string) => Promise<IProduct>;
 	getProductList: () => Promise<IProduct[]>;
 	createOrder: (order: IOrder) => Promise<SuccessfulOrder>;
 }
 
-export class LarekAPI extends Api implements ProductAPI {
+export class productAPI extends Api implements ProductService {
 	readonly cdn: string;
 
 	constructor(cdn: string, baseUrl: string, options?: RequestInit) {

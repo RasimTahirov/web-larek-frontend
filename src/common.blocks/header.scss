@@ -32,6 +32,7 @@
     border: none;
     position: relative;
     cursor: pointer;
+    transition: opacity 0.3s ease;
 
     &-counter {
       position: absolute;
@@ -48,5 +49,9 @@
       border-radius: 100%;
       font-weight: 600;
     }
+  }
+  
+  &__basket:hover {
+    opacity: 0.8;
   }
 }

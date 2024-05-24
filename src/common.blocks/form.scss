@@ -3,7 +3,7 @@
 
 .form {
   @include mixins.flex(column);
-  gap: 1.5rem;
+  gap: 8.5rem;
   border-radius: 3rem;
 
   &__label {
@@ -33,5 +33,18 @@
     &::placeholder {
       color: lighten($primaryLight, 23%);
     }
+  }
+
+  &__error-test {
+    display: flex;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    height: 26px;
+  }
+
+  &__error-test-none {
+    opacity: 0;
+    height: 26px;
   }
 }

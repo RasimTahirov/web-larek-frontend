@@ -15,4 +15,13 @@
     @include mixins.flex(row);
     gap: 1.5rem;
   }
+
+  &__button-payment:hover {
+    border: 2px solid rgb(255, 255, 255, 0.5);
+    animation: 0.3s ease-in;
+  }
+
+  &__button-payment {
+    transition: border-color 0.2s ease;
+  }
 }
