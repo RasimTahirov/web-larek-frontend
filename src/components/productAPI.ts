@@ -2,7 +2,6 @@ import { Api, ApiListResponse } from './base/api';
 import { IProduct, IOrder, SuccessfulOrder } from '../types';
 
 export interface ProductService {
-	getProductById: (id: string) => Promise<IProduct>;
 	getProductList: () => Promise<IProduct[]>;
 	createOrder: (order: IOrder) => Promise<SuccessfulOrder>;
 }
@@ -13,13 +12,6 @@ export class productAPI extends Api implements ProductService {
 	constructor(cdn: string, baseUrl: string, options?: RequestInit) {
 		super(baseUrl, options);
 		this.cdn = cdn;
-	}
-
-	getProductById(id: string): Promise<IProduct> {
-		return this.get(`/product/${id}`).then((item: IProduct) => ({
-			...item,
-			image: this.cdn + item.image,
-		}));
 	}
 
 	getProductList(): Promise<IProduct[]> {

@@ -45,105 +45,232 @@ yarn build
 ### Класс Api
 Класс Api используется для создания экземпляра, который выполняет API запросы.
 
-```ts
-constructor(baseUrl: string, options: RequestInit = {})
-```
+>Свойства
  - `baseUrl: string` - Базовый URL для API.
  - `options: RequestInit` - Дополнительные параметры для настройки запросов. 
 
-```ts
-protected handleResponse(response: Response): Promise<object>
-```
- - `handleResponse` - метод, который обрабатывает ответ от сервера.
-
-```ts
-get(uri: string): Promise<object>
-```
+> Методы
+- `handleResponse` - метод, который обрабатывает ответ от сервера.
 - `get` - метод получает данные с сервера.
-
-```ts
-post(uri: string, data: object, method: ApiPostMethods = 'POST')
-```
 - `post` - метод отправляет данные на сервер
 ___
 ### Класс Component
-```ts
-abstract class Component<T>
-```
 Абстрактный класс для создания компонентов пользовательского интерфейса, которые работают с HTML-элементами.
 
-<!-- ```ts
-protected constructor(protected readonly container: HTMLElement)
-``` -->
-
-```ts
-protected toggleClass(element: HTMLElement, className: string, force?: boolean)
-```
+> Методы
 - `toggleClass` - переключает CSS-класс на указанном HTML-элементе.
-
-```ts
-protected setText(element: HTMLElement, value: unknown)
-```
 - `setText` - устанавливает текстовое содержимое указанного HTML-элемента.
-
-```ts
-protected setDisabled(element: HTMLElement, state: boolean)
-```
 - `setDisabled` - устанавливает или снимает атрибут `disabled` у указанного HTML-элемента.
-
-```ts
-protected setImage(element: HTMLImageElement, src: string, alt?: string)
-```
 - `setImage` - устанавливает источник и альтернативный текст для HTML-элемента изображения.
-
-```ts
-render(data?: Partial<T>): HTMLElement
-```
 - `render` - Метод обновляет компонент с переданными данными и возвращает корневой HTML-элемент.
 ___
 ### Класс EventEmitter
-```ts
-class EventEmitter implements IEvents
-```
 Класс предоставляет функциональность для управления событиями, включая добавление, удаление и вызов обработчиков событий. 
 
-```ts
-on<T extends object>(eventName: EventName, callback: (event: T) => void)
-```
- - `on` - Добавляет обработчик для указанного события.
-
-```ts
-off(eventName: EventName, callback: Subscriber)
-```
+>Методы
+- `on` - Добавляет обработчик для указанного события.
 - `of` - Удаляет обработчик для указанного события.
-
-```ts
-emit<T extends object>(eventName: string, data?: T)
-```
 - `emit` - Вызывает все обработчики для указанного события.
-
-```ts
-onAll(callback: (event: EmitterEvent) => void)
-```
 - `onAll` - Добавляет обработчик для всех событий.
-
-```ts
-offAll()
-```
 - `offAll` - Удаляет все обработчики для всех событий.
-  
-```ts
-trigger<T extends object>(eventName: string, context?: Partial<T>)
-```
 - `trigger` - Создает функцию-триггер, которая вызывает событие при вызове.
 ___
 ### Класс Model
-```ts
-abstract class Model<T>
-```
 Абстрактный базовый класс, предназначенный для создания моделей данных. Модели используются для представления и управления данными в приложении.
 
-```ts
-emitChanges(event: string, payload?: object) 
-```
+>Методы
 - `emitChanges` - Метод emitChanges инициирует событие с указанными данными.
+
+## Общие компоненты
+### Класс ProductAPI
+Класс предоставляет методы для взаимодействия с API продуктов и заказов, включая получение информации о продукте, списка продуктов и создание заказа.
+
+>Конструктор
+- `cdn: string` - Базовый URL, где хранятся изображения товаров.
+- `baseUrl: string` - Базовый URL для API.
+- `options: RequestInit` - Дополнительные параметры для запросов к API.
+
+>Методы
+- `getProductById` - Получает список всех продуктов и добавляет для каждой карточки URL изображения
+- `createOrder` - Отправляет запрос об информации заказа 
+___
+### Класс Modal
+Класс представляет собой компонент модального окна отображение контента в нем. Он предоставляет методы для открытия, закрытия модального окна. 
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент компонента модального окна
+- `events: IEvents` - Объект для управления событиями
+
+>Методы
+- `set content(value: HTMLElement)` - Устанавливает контент для модального окна
+- `open()` - Открытие модально окна
+- `close()` - Закрытие модально окна
+___
+### Класс Form
+Класс представляет собой компонент формы, который управляет вводом данных и обработкой событий формы. Он позволяет обрабатывать изменения в полях ввода и отправку формы с помощью событий.
+
+>Конструктор
+- `container: HTMLFormElement` - DOM элемент компонента формы
+- `events: IEvents` - Объект для управления событиями
+
+>Методы
+- `onInputChange(field: keyof T, value: string)` - Обрабатывает изменения в полях ввода формы и вызывает соответствующее событие
+___
+### Класс Card
+Класс представляет компонент карточки продукта. Он управляет отображением информации о продукте: название, категория, изображение, цена и описание
+
+>Свойства
+- `_title: HTMLElement` - Элемент, отображающий название продукта
+- `_category: HTMLElement` - Элемент, отображающий категорию продукта
+- `_image: HTMLImageElement` - Элемент изображения продукта
+- `_price: HTMLElement` - Элемент, отображающий стоимость продукта
+- `_description: HTMLElement` - Элемент, отображающий описание продукта
+- `_buttonAddBasket: HTMLButtonElement` - Кнопка для добавления продукта в корзину
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент карточки продукта
+- `actions: IAction` - Обработчик клика
+
+>Методы
+- `set id(value: string)` - Устанавливает идентификатор карточки
+- `set title(value: string)` - Устанавливает название продукта
+- `set category(value: Category)` - Устанавливает категорию продукта
+- `set image(value: string)` - Устанавливает изображение продукта
+- `set price(value: string)` - Устанавливает цену продукта
+- `set description(value: string | string[])` - Устанавливает описание продукта
+___
+### Класс Basket
+Класс представляет собой компонент корзины, который управляет списком товаров, их общей стоимостью и взаимодействием с пользователем
+
+>Свойства
+- `_list: HTMLElement` - Элемент, содержащий список товаров
+- `_total: HTMLElement` - Элемент, отображающий общую стоимость товаров в корзине
+- `_button: HTMLButtonElement` - Кнопка для оформления заказа
+- `_titleEmpty: HTMLElement` - Элемент, отображающий сообщение о пустой корзине
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент корзины
+- `events: IEvents` — Объект для управления событиями.
+
+>Методы
+- `set items(items: IProduct[])` - Устанавливает товары в корзине
+- `set title(value: string)` - Устанавливает сообщение о пустой корзине
+- `set total(value: number)` - Устанавливает общую стоимость товаров в корзине
+- `hideElement(element: HTMLElement)` - Скрывает элемент
+- `showElement(element: HTMLElement)` - Показывает элемент
+- `clear()` - Очищает список товаров в корзине
+- `addItem(item: HTMLElement)` - Добавляет товар в список корзины
+___
+### Класс BasketItem
+Класс отражает информацию о товаре в корзине
+
+>Свойства
+- `_deleteButton?: HTMLButtonElement` - Кнопка для удаления товара
+- `_index: HTMLElement` - Элемент, отображающий индекс товара
+- `_title: HTMLElement` - Элемент, отображающий название товара
+- `_price: HTMLElement` - Элемент, отображающий цену товара
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент корзины
+- `actions: IAction` - Обработчик клика
+
+>Методы
+- `set index(value: number)` - Устанавливает индекс товара
+- `set title(value: string)` - Устанавливает название товара
+- `set price(value: string)` - Устанавливает цену товара
+___
+### Класс OrderForm
+Класс представляет собой компонент формы заказа. Он управляет вводом данных для платежа и адреса доставки
+
+>Свойства
+- `_paymentContainer: HTMLElement` - Контейнер, содержащий кнопки выбора способа оплаты
+- `_paymentButton: HTMLButtonElement[]` - Массив кнопок выбора способа оплаты
+- `_addressInput: HTMLInputElement` - Поле ввода адреса доставки
+- `_nextButton: HTMLButtonElement` - Кнопка для перехода к следующему шагу оформления заказа
+
+>Конструктор
+- `container: HTMLFormElement` - DOM элемент формы заказа
+- `events: IEvents` - Объект для управления событиями
+
+>Методы
+- `setToggleClassPayment(name: string)` - Устанавливает активный класс для выбранной кнопки оплаты
+- `updateNextButtonState()` - Обновляет состояние кнопки перехода к следующему шагу, в зависимости от того, выбраны ли способ оплаты и введен ли адрес.
+- `set address(value: string)` - Устанавливает значение адреса доставки
+___
+### Класс Contacts
+Класс представляет собой компонент формы контактов. Он управляет вводом данных для контактной информации (телефон и email), форматированием телефонного номера, валидацией email и обработкой событий
+
+>Свойства
+- `_phoneInput: HTMLInputElement` - Поле ввода телефонного номера
+- `_emailInput: HTMLInputElement` - Поле ввода email
+- `_nextButton: HTMLButtonElement` - Кнопка для перехода к следующему шагу
+- `_emailErrorMessage: HTMLElement` - Элемент для отображения сообщения об ошибке email
+- `_phoneErrorMessage: HTMLElement` - Элемент для отображения сообщения об ошибке телефона
+
+>Конструктор
+- `container: HTMLFormElement` - DOM элемент формы контактов
+- `events: IEvents` - Объект для управления событиями
+
+>Методы
+- `set email(value: string)` - Устанавливает значение email
+- `set phone(value: string)` -Устанавливает значение номера телефона
+- `formatPhoneInput()` - Форматирует введенный телефонный номер в формате `+7`
+- `validateEmail(email: string): boolean` - Проверяет корректность введенного email
+- `showErrorMessage(element: HTMLElement, message: string)` - Отображает сообщение об ошибке
+- `handleSubmit(events: IEvents)` - Обрабатывает отправку формы
+___
+### Класс Success
+Класс представляет собой компонент, отображающий сообщение об успешном завершении заказа
+
+>Свойства 
+- `_close: HTMLElement` - Элемент кнопки закрытия
+- `_total: HTMLElement` - Элемент для отображения общей суммы списанных средств
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент формы оплаты
+- `actions: IAction` - Обработчик клика
+
+>Методы
+- `set total(total: string)` - Устанавливает значение общей суммы списанных средств
+___
+### Класс Page
+Класс представляет собой компонент страницы, управляющий отображением каталога товаров, счетчика корзины, состоянием страницы и взаимодействием с пользователем через события.
+
+>Свойства
+- `_catalog: HTMLElement` - Элемент каталога товаров
+- `_counter: HTMLElement` - Элемент счетчика товаров в корзине
+- `_wrapper: HTMLElement` - Обертка страницы
+- `_basket: HTMLElement` - Элемент корзины
+- `_locked: boolean` - Флаг, указывающий заблокирована ли страница
+
+>Конструктор
+- `container: HTMLElement` - DOM элемент всей страницы
+- `events: IEvents` - Объект для управления событиями
+
+>Методы
+- `set counter(value: number)` - Устанавливает значение счетчика товаров корзины
+- `set catalog(items: HTMLElement[])` - устанавливает каталог товаров
+- `set locked(value: boolean)` - Устанавливает состояние блокировки страницы, если модальное окно открыто
+___
+### Класс AppState
+Класс представляет собой модель состояния приложения
+
+>Свойства
+- `catalog: IProduct[]` - Каталог продуктов
+- `basket: IProduct[]` - Корзина товаров
+- `order: IOrder` - Заказ, содержащий адрес, способ оплаты, email, телефон, товары и общую сумму
+- `preview: string | null` - Идентификатор продукта для предпросмотра
+
+>Методы
+- `setCatalog(items: IProduct[]): void` - Устанавливает каталог продуктов
+- `addToBasket(value: Product)` - Добавляет продукт в корзину
+- `setPreview(item: IProduct)` - Устанавливает продукт для предпросмотра
+- `setPayment(payment: string)` - Устанавливает способ оплаты 
+- `getBasketAmount(): number` - Возвращает количество товаров в корзине
+- `getTotalPrice(): number` - Возвращает общую стоимость товаров в корзине
+- `removeFromBasket(value: Product)` - Удаляет продукт из корзины 
+- `clearBasket()` - Очищает корзину
+- `updateOrderItems()` - Обновляет список идентификаторов товаров в заказе на основе текущей корзины
+- `setEmail(email: string)` - Устанавливает email для заказа
+- `setPhone(phone: string)` - Устанавливает номер телефона для заказа
+- `setAddress(address: string)` - Устанавливает адрес для заказа
