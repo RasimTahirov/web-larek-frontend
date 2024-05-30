@@ -1,14 +1,5 @@
-import { IProduct, IAppState, IOrder, Category } from '../types';
+import { IProduct, IAppState, IOrder } from '../types';
 import { Model } from './base/model';
-
-export class Product extends Model<IProduct> {
-	id: string;
-	title: string;
-	category: Category;
-	image: string;
-	price: number | null;
-	description: string;
-}
 
 export class AppState extends Model<IAppState> {
 	catalog: IProduct[];
@@ -24,22 +15,21 @@ export class AppState extends Model<IAppState> {
 	preview: string | null;
 
 	setCatalog(items: IProduct[]): void {
-		this.catalog = items.map((item) => new Product(item, this.events));
+		this.catalog = items;
 		this.emitChanges('items:changed', { catalog: this.catalog });
 	}
 
-	addToBasket(value: Product) {
+	addToBasket(value: IProduct) {
 		const existingItemIndex = this.basket.findIndex(
 			(item) => item.id === value.id
 		);
 
 		if (existingItemIndex !== -1) {
-			this.basket[existingItemIndex].quantity += 1;
+			this.basket[existingItemIndex].quantity = (this.basket[existingItemIndex].quantity || 0) + 1;
 		} else {
 			this.basket.push({ ...value, quantity: 1 });
 		}
-
-		this.updateOrderItems();
+		
 		this.emitChanges('basket:changed', { basket: this.basket });
 	}
 
@@ -58,25 +48,44 @@ export class AppState extends Model<IAppState> {
 	}
 
 	getTotalPrice() {
-		return this.basket.reduce((total, item) => total + item.price, 0);
+		return this.basket.reduce(
+			(total, item) => total + (item.price || 0) * (item.quantity || 1),
+			0
+		);
 	}
 
-	removeFromBasket(value: Product) {
+	removeFromBasket(value: IProduct) {
 		const existingItemIndex = this.basket.findIndex(
 			(item) => item.id === value.id
 		);
 
 		if (existingItemIndex !== -1) {
 			this.basket.splice(existingItemIndex, 1);
-			this.updateOrderItems();
 			this.emitChanges('basket:changed', { basket: this.basket });
 		}
 	}
 
 	clearBasket() {
 		this.basket = [];
-		this.updateOrderItems();
 		this.emitChanges('basket:changed', { basket: this.basket });
+		this.clearBasketCounter();
+	}
+
+	resetOrder() {
+		this.order = {
+			address: '',
+			payment: '',
+			email: '',
+			phone: '',
+			items: [],
+			total: null,
+		};
+		
+		this.emitChanges('order:changed', this.order);
+	}
+
+	clearBasketCounter() {
+		this.emitChanges('counter:changed', { count: 0 });
 	}
 	updateOrderItems() {
 		this.order.items = this.basket.map((item) => item.id);
@@ -95,5 +104,33 @@ export class AppState extends Model<IAppState> {
 	setAddress(address: string) {
 		this.order.address = address;
 		this.emitChanges('order:changed', { address });
+	}
+
+	validateOrder() {
+		const isPaymentSelected = this.order.payment !== '';
+		const isAddressFilled = this.order.address.trim() !== '';
+		return isPaymentSelected && isAddressFilled;
+	}
+
+	validateContacts() {
+		const isEmailValid = this.order.email.trim() !== '';
+		const isPhoneValid = this.order.phone.trim().length === 12;
+		return isEmailValid && isPhoneValid;
+	}
+
+	isValidEmail(email: string): boolean {
+		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailPattern.test(email);
+	}
+
+	formatPhoneInput(phone: string): string {
+		const digitsOnly = phone.replace(/\D/g, '');
+		if (digitsOnly.startsWith('8')) {
+			return '+7' + digitsOnly.substring(1);
+		} else if (!digitsOnly.startsWith('7')) {
+			return '+7' + digitsOnly;
+		} else {
+			return '+' + digitsOnly;
+		}
 	}
 }

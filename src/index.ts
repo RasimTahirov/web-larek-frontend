@@ -1,5 +1,5 @@
 import './scss/styles.scss';
-import { AppState, Product } from './components/appstate';
+import { AppState } from './components/appstate';
 import { Contacts, OrderForm } from './components/order';
 import { IProduct } from './types';
 import { EventEmitter } from './components/base/events';
@@ -71,7 +71,7 @@ events.on('preview:changed', (item: IProduct) => {
 	});
 });
 
-events.on('card:add', (item: Product) => {
+events.on('card:add', (item: IProduct) => {
 	appData.addToBasket(item);
 	page.counter = appData.getBasketAmount();
 	modal.close();
@@ -90,14 +90,11 @@ events.on('basket:changed', () => {
 		basketItem.price = price !== null ? price.toString() : null;
 		return basketItem.render();
 	});
-
-	basket.clear();
-	basketItems.forEach((item) => basket.addItem(item));
+	basket.items = basketItems;
 	basket.total = appData.getTotalPrice();
-	basket.items = appData.basket;
 });
 
-events.on('card:remove', (item: Product) => {
+events.on('card:remove', (item: IProduct) => {
 	appData.removeFromBasket(item);
 	page.counter = appData.getBasketAmount();
 });
@@ -107,8 +104,8 @@ events.on('contact:open', () => {
 	modal.render({ content: contactsModalContent });
 	modal.open();
 
-	const formContainer = document.querySelector<HTMLFormElement>('.form[name="contacts"]');
-	const contactsForm = new Contacts(formContainer, events);
+	const formContainer = ensureElement<HTMLFormElement>('.form[name="contacts"]');
+	new Contacts(formContainer, events, appData);
 });
 
 events.on('basket:open', () => {
@@ -118,7 +115,11 @@ events.on('basket:open', () => {
 
 events.on('order:open', () => {
 	modal.render({ content: cloneTemplate(orderTemplate) });
-	new OrderForm(ensureElement<HTMLFormElement>('.form[name="order"]'), events);
+	new OrderForm(
+		ensureElement<HTMLFormElement>('.form[name="order"]'),
+		events,
+		appData
+	);
 	modal.open();
 });
 
@@ -131,37 +132,36 @@ events.on('order:address', (event: { address: string }) => {
 });
 
 events.on('contacts:submit', (data: { email: string; phone: string }) => {
-	appData.setEmail(data.email);
-	appData.setPhone(data.phone);
+	if (data && data.email && data.phone) {
+		appData.setEmail(data.email);
+		appData.setPhone(data.phone);
+		appData.updateOrderItems();
 
-	const totalPrice = appData.getTotalPrice();
-	appData.order.total = totalPrice;
+		const totalPrice = appData.getTotalPrice();
+		appData.order.total = totalPrice;
 
-	console.log(appData.order);
+		console.log(appData.order);
 
-	api
-		.createOrder(appData.order)
-		.then((result) => {
-			appData.clearBasket();
-			const basketCounterElement = document.getElementById('header__basket-counter');
+		api
+			.createOrder(appData.order)
+			.then((result) => {
+				appData.clearBasket();
 
-			if (basketCounterElement) {
-				basketCounterElement.innerText = '0';
-			}
+				const success = new Success(cloneTemplate(successTemplate), {
+					onClick: () => modal.close(),
+				});
 
-			const success = new Success(cloneTemplate(successTemplate), {
-				onClick: () => modal.close(),
+				modal.render({
+					content: success.render({
+						total: result.total,
+					}),
+				});
+				appData.resetOrder();
+			})
+			.catch((err) => {
+				console.error(err);
 			});
-			
-			modal.render({
-				content: success.render({
-					total: result.total,
-				}),
-			});
-		})
-		.catch((err) => {
-			console.error(err);
-		});
+	}
 });
 
 events.on('modal:open', () => (page.locked = true));

@@ -14,12 +14,16 @@ export class Page extends Component<IPage> {
 		super(container);
 
 		this._catalog = ensureElement<HTMLElement>('.gallery', container);
-		this._counter = ensureElement<HTMLElement>('.header__basket-counter', container);
+		this._counter = ensureElement<HTMLElement>('.header__basket-counter',container);
 		this._wrapper = ensureElement<HTMLElement>('.page__wrapper', container);
 		this._basket = ensureElement<HTMLElement>('.header__basket', container);
 
 		this._basket.addEventListener('click', () => {
 			this.events.emit('basket:open');
+		});
+
+		this.events.on('counter:changed', (data: { count: number }) => {
+			this.counter = data.count;
 		});
 	}
 

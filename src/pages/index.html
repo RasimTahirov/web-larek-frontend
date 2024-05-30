@@ -282,7 +282,6 @@
 								При получении
 							</button>
 						</div>
-						<!-- <span class="form__error-test move-left-right">выберите способ оплаты</span> -->
 					</div>
 					<label class="order__field">
 						<span class="form__label modal__title">Адрес доставки</span>
@@ -293,14 +292,13 @@
 							placeholder="Введите адрес"
 							autocomplete="off"
 						/>
-						<span class="form__error-test form__error-test-none"></span>
+						<span class="form__error-test ">Введите адрес и выберите способ оплаты</span>
 					</label>
 				</div>
 				<div class="modal__actions">
 					<button type="submit" disabled class="button order__button">
 						Далее
 					</button>
-					<span class="form__errors"></span>
 				</div>
 			</form>
 		</template>
@@ -317,7 +315,7 @@
 							placeholder="Введите Email"
 							autocomplete="off"
 						/>
-						<span class="form__error-test form__error-test-none"></span>
+						<span class="form__error-test">Введите email</span>
 					</label>
 					<label class="order__field">
 						<span class="form__label modal__title">Телефон</span>
@@ -331,11 +329,11 @@
 							inputmode="numeric"
 							pattern="[+0-9]*"
 						/>
-						<span class="form__error-test form__error-test-none"></span>
+						<span class="form__error-test">Введите номер телефона</span>
 					</label>
 				</div>
 				<div class="modal__actions">
-					<button type="submit" class="button paybtn">Оплатить</button>
+					<button disabled type="submit" class="button paybtn">Оплатить</button>
 					<span class="form__errors"></span>
 				</div>
 			</form>

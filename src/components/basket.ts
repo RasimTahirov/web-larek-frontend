@@ -1,5 +1,5 @@
 import { Component } from './base/component';
-import { IBasket, IBasketItems, IProduct } from '../types';
+import { IBasket, IBasketItems } from '../types';
 import { IEvents } from './base/events';
 import { ensureElement } from '../utils/utils';
 import { IAction } from '../types';
@@ -23,11 +23,11 @@ export class Basket extends Component<IBasket> {
 				events.emit('order:open');
 			});
 		}
-		
+
 		this.items = [];
 	}
 
-	set items(items: IProduct[]) {
+	set items(items: HTMLElement[]) {
 		if (items.length > 0) {
 			this.setDisabled(this._button, false);
 			this.hideElement(this._titleEmpty);
@@ -35,6 +35,7 @@ export class Basket extends Component<IBasket> {
 			this.setDisabled(this._button, true);
 			this.showElement(this._titleEmpty);
 		}
+		this._list.replaceChildren(...items);
 	}
 
 	set title(value: string) {
@@ -46,7 +47,7 @@ export class Basket extends Component<IBasket> {
 	}
 
 	set total(value: number) {
-		this._total.textContent = String(value) + ' синапсов';
+		this.setText(this._total, `${value} синапсов`);
 	}
 
 	hideElement(element: HTMLElement) {
