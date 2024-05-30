@@ -9,16 +9,20 @@ export class Card extends Component<IProduct> {
 	protected _price?: HTMLElement;
 	protected _description?: HTMLElement;
 	protected _buttonAddBasket: HTMLButtonElement;
+	protected _deleteButton?: HTMLButtonElement;
+	protected _index?: HTMLElement;
 
 	constructor(container: HTMLElement, actions: IAction) {
 		super(container);
 
 		this._title = ensureElement<HTMLElement>('.card__title', container);
 		this._category = container.querySelector('.card__category');
-		this._image = ensureElement<HTMLImageElement>('.card__image', container);
+		this._image = container.querySelector(`.card__image`);
 		this._price = container.querySelector('.card__price');
 		this._description = container.querySelector('.card__text');
 		this._buttonAddBasket = container.querySelector('.card__button');
+		this._deleteButton = container.querySelector('.basket__item-delete');
+		this._index = container.querySelector('.basket__item-index');
 
 		if (actions?.onClick) {
 			if (this._buttonAddBasket) {
@@ -26,6 +30,10 @@ export class Card extends Component<IProduct> {
 			} else {
 				container.addEventListener('click', actions.onClick);
 			}
+		}
+
+		if (this._deleteButton) {
+			this._deleteButton.addEventListener('click', actions.onClick);
 		}
 	}
 
@@ -92,5 +100,9 @@ export class Card extends Component<IProduct> {
 		} else {
 			this.setText(this._description, value);
 		}
+	}
+
+	set index(value: number) {
+		this.setText(this._index, value);
 	}
 }

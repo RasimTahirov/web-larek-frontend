@@ -9,8 +9,8 @@ export class AppState extends Model<IAppState> {
 		payment: '',
 		email: '',
 		phone: '',
-		items: [],
-		total: null,
+		// items: [],
+		// total: null,
 	};
 	preview: string | null;
 

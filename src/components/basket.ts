@@ -1,8 +1,7 @@
 import { Component } from './base/component';
-import { IBasket, IBasketItems } from '../types';
+import { IBasket } from '../types';
 import { IEvents } from './base/events';
 import { ensureElement } from '../utils/utils';
-import { IAction } from '../types';
 
 export class Basket extends Component<IBasket> {
 	protected _list: HTMLElement;
@@ -64,37 +63,5 @@ export class Basket extends Component<IBasket> {
 
 	addItem(item: HTMLElement) {
 		this._list.appendChild(item);
-	}
-}
-
-export class BasketItem extends Component<IBasketItems> {
-	protected _deleteButton?: HTMLButtonElement;
-	protected _index?: HTMLElement;
-	protected _title?: HTMLElement;
-	protected _price?: HTMLElement;
-
-	constructor(container: HTMLElement, actions: IAction) {
-		super(container);
-
-		this._deleteButton = container.querySelector('.basket__item-delete');
-		this._index = ensureElement<HTMLElement>('.basket__item-index', container);
-		this._title = ensureElement<HTMLElement>('.card__title', container);
-		this._price = ensureElement<HTMLElement>('.card__price', container);
-
-		if (this._deleteButton) {
-			this._deleteButton.addEventListener('click', actions.onClick);
-		}
-	}
-
-	set index(value: number) {
-		this.setText(this._index, value);
-	}
-
-	set title(value: string) {
-		this.setText(this._title, value);
-	}
-
-	set price(value: string) {
-		this.setText(this._price, `${value} синапсов`);
 	}
 }

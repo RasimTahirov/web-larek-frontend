@@ -31,8 +31,8 @@ export interface IOrder {
 	address: string;
 	email: string;
 	phone: string;
-	items: string[];
-	total: number;
+	items?: string[];
+	total?: number;
 }
 
 export interface IBasket {

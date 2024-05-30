@@ -9,7 +9,7 @@ import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/page';
 import { productAPI } from './components/productAPI';
 import { API_URL, CDN_URL } from './utils/constants';
-import { Basket, BasketItem } from './components/basket';
+import { Basket,  } from './components/basket';
 import { Success } from './components/success';
 const events = new EventEmitter();
 const appData = new AppState({}, events);
@@ -82,13 +82,13 @@ events.on('basket:changed', () => {
 
 	const basketItems = appData.basket.map((item) => {
 		const { title, price } = item;
-		const basketItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
+		const cardItem = new Card(cloneTemplate(cardBasketTemplate), {
 			onClick: () => events.emit('card:remove', item),
 		});
-		basketItem.index = indexCounter++;
-		basketItem.title = title;
-		basketItem.price = price !== null ? price.toString() : null;
-		return basketItem.render();
+		cardItem.index = indexCounter++;
+		cardItem.title = title;
+		cardItem.price = price !== null ? price.toString() : null;
+		return cardItem.render();
 	});
 	basket.items = basketItems;
 	basket.total = appData.getTotalPrice();
@@ -115,11 +115,7 @@ events.on('basket:open', () => {
 
 events.on('order:open', () => {
 	modal.render({ content: cloneTemplate(orderTemplate) });
-	new OrderForm(
-		ensureElement<HTMLFormElement>('.form[name="order"]'),
-		events,
-		appData
-	);
+	new OrderForm(ensureElement<HTMLFormElement>('.form[name="order"]'), events, appData);
 	modal.open();
 });
 
