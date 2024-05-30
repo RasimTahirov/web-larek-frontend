@@ -11,6 +11,7 @@ export class Card extends Component<IProduct> {
 	protected _buttonAddBasket: HTMLButtonElement;
 	protected _deleteButton?: HTMLButtonElement;
 	protected _index?: HTMLElement;
+	protected _isInBasket = false;
 
 	constructor(container: HTMLElement, actions: IAction) {
 		super(container);
@@ -35,6 +36,15 @@ export class Card extends Component<IProduct> {
 		if (this._deleteButton) {
 			this._deleteButton.addEventListener('click', actions.onClick);
 		}
+	}
+
+	set isInBasket(value: boolean) {
+		this._isInBasket = value;
+		this.setDisabled(this._buttonAddBasket, value);
+	}
+
+	get isInBasket(): boolean {
+		return this._isInBasket;
 	}
 
 	set id(value: string) {
@@ -81,7 +91,7 @@ export class Card extends Component<IProduct> {
 	set price(value: string) {
 		if (value !== null) {
 			this.setText(this._price, value + ' синапсов');
-			this.setDisabled(this._buttonAddBasket, false);
+			this.setDisabled(this._buttonAddBasket, this._isInBasket);
 		} else {
 			this.setText(this._price, 'Бесценно');
 			this.setDisabled(this._buttonAddBasket, true);

@@ -40,6 +40,7 @@ events.on('items:changed', () => {
 		const cardCatalog = new Card(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', item),
 		});
+		cardCatalog.isInBasket = appData.isItemInBasket(item);
 		return cardCatalog.render({
 			id,
 			category,
@@ -52,6 +53,7 @@ events.on('items:changed', () => {
 
 events.on('card:select', (item: IProduct) => {
 	appData.setPreview(item);
+	events.emit('preview:changed', item);
 });
 
 events.on('preview:changed', (item: IProduct) => {
@@ -59,6 +61,7 @@ events.on('preview:changed', (item: IProduct) => {
 	const cardPreview = new Card(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit('card:add', item),
 	});
+	cardPreview.isInBasket = appData.isItemInBasket(item);
 	modal.render({
 		content: cardPreview.render({
 			id,
@@ -72,22 +75,16 @@ events.on('preview:changed', (item: IProduct) => {
 });
 
 events.on('card:add', (item: IProduct) => {
-    const existingItemIndex = appData.basket.findIndex(
-        (basketItem) => basketItem.id === item.id
-    );
-
-    if (existingItemIndex !== -1) {
-        return;
-    }
-
-    appData.addToBasket(item);
-    page.counter = appData.getBasketAmount();
-    modal.close();
+	if (appData.isItemInBasket(item)) {
+		return;
+	}
+	appData.addToBasket(item);
+	page.counter = appData.getBasketAmount();
+	modal.close();
 });
 
 events.on('basket:changed', () => {
 	let indexCounter = 1;
-
 	const basketItems = appData.basket.map((item) => {
 		const { title, price } = item;
 		const cardItem = new Card(cloneTemplate(cardBasketTemplate), {

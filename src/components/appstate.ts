@@ -33,6 +33,10 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('basket:changed', { basket: this.basket });
 	}
 
+	isItemInBasket(item: IProduct): boolean {
+		return this.basket.some((basketItem) => basketItem.id === item.id);
+	}
+
 	setPreview(item: IProduct) {
 		this.preview = item.id;
 		this.emitChanges('preview:changed', item);
@@ -49,7 +53,7 @@ export class AppState extends Model<IAppState> {
 
 	getTotalPrice() {
 		return this.basket.reduce(
-			(total, item) => total + (item.price || 0) * (item.quantity || 1),
+			(total, item) => total + (item.price || 0) * (item.quantity || 1), 
 			0
 		);
 	}
@@ -80,14 +84,14 @@ export class AppState extends Model<IAppState> {
 			items: [],
 			total: null,
 		};
-		
+
 		this.emitChanges('order:changed', this.order);
 	}
 
 	clearBasketCounter() {
 		this.emitChanges('counter:changed', { count: 0 });
 	}
-	
+
 	updateOrderItems() {
 		this.order.items = this.basket.map((item) => item.id);
 	}
