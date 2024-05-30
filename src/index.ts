@@ -9,7 +9,7 @@ import { cloneTemplate, ensureElement } from './utils/utils';
 import { Page } from './components/page';
 import { productAPI } from './components/productAPI';
 import { API_URL, CDN_URL } from './utils/constants';
-import { Basket,  } from './components/basket';
+import { Basket } from './components/basket';
 import { Success } from './components/success';
 const events = new EventEmitter();
 const appData = new AppState({}, events);
@@ -72,9 +72,17 @@ events.on('preview:changed', (item: IProduct) => {
 });
 
 events.on('card:add', (item: IProduct) => {
-	appData.addToBasket(item);
-	page.counter = appData.getBasketAmount();
-	modal.close();
+    const existingItemIndex = appData.basket.findIndex(
+        (basketItem) => basketItem.id === item.id
+    );
+
+    if (existingItemIndex !== -1) {
+        return;
+    }
+
+    appData.addToBasket(item);
+    page.counter = appData.getBasketAmount();
+    modal.close();
 });
 
 events.on('basket:changed', () => {

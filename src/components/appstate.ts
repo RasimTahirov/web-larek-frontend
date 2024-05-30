@@ -9,8 +9,8 @@ export class AppState extends Model<IAppState> {
 		payment: '',
 		email: '',
 		phone: '',
-		// items: [],
-		// total: null,
+		items: [],
+		total: null,
 	};
 	preview: string | null;
 
@@ -87,6 +87,7 @@ export class AppState extends Model<IAppState> {
 	clearBasketCounter() {
 		this.emitChanges('counter:changed', { count: 0 });
 	}
+	
 	updateOrderItems() {
 		this.order.items = this.basket.map((item) => item.id);
 	}
