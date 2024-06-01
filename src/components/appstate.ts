@@ -89,7 +89,7 @@ export class AppState extends Model<IAppState> {
 	}
 
 	clearBasketCounter() {
-		this.emitChanges('counter:changed', { count: 0 });
+		this.emitChanges('basket:changed', { count: 0 });
 	}
 
 	updateOrderItems() {

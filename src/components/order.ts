@@ -8,8 +8,8 @@ export class OrderForm extends Form<IPayment> {
 	protected _paymentContainer: HTMLElement;
 	protected _paymentButton: HTMLButtonElement[];
 	protected _addressInput: HTMLInputElement;
-	protected _nextButton: HTMLButtonElement;
 	protected _errorText: HTMLElement;
+	protected _submitButton: HTMLButtonElement
 	protected appState: AppState;
 
 	constructor(container: HTMLFormElement, events: IEvents, appState: AppState) {
@@ -20,7 +20,7 @@ export class OrderForm extends Form<IPayment> {
 		this._paymentContainer = ensureElement<HTMLElement>('.order__buttons', this.container);
 		this._paymentButton = Array.from(this._paymentContainer.querySelectorAll('.button_alt'));
 		this._addressInput = this.container.elements.namedItem('address') as HTMLInputElement;
-		this._nextButton = this.container.querySelector<HTMLButtonElement>('.order__button');
+		this._submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
 		this._errorText = this.container.querySelector('.form__error-test');
 
 		this._paymentContainer.addEventListener('click', (event) => {
@@ -38,11 +38,11 @@ export class OrderForm extends Form<IPayment> {
 			this.validateForm();
 		});
 
-		this._nextButton.addEventListener('click', () => {
-			if (!this._nextButton.disabled) {
-				events.emit('contact:open');
-			}
-		});
+		this._submitButton.addEventListener('click', () => {
+            if (!this._submitButton.disabled) {
+                events.emit('contact:open');
+            }
+        });
 
 		this.validateForm();
 	}
@@ -51,31 +51,31 @@ export class OrderForm extends Form<IPayment> {
 		this._addressInput.value = value;
 		this.validateForm();
 	}
-
+	
 	setToggleClassPayment(name: string) {
 		this._paymentButton.forEach((button) => 
 			{this.toggleClass(button, 'button_alt-active', button.name === name)});
 	}
 
 	validateForm() {
-		const isValid = this.appState.validateOrder();
+        const isValid = this.appState.validateOrder();
 
-		if (isValid) {
-			this._nextButton.disabled = false;
-			this._errorText.classList.add('form__error-test-none');
-		} else {
-			this._nextButton.disabled = true;
-			this._errorText.classList.remove('form__error-test-none');
-		}
-	}
+        if (isValid) {
+            this.setDisabled(this._submitButton, false);
+            this.toggleClass(this._errorText, 'form__error-test-none', true);
+        } else {
+            this.setDisabled(this._submitButton, true);
+            this.toggleClass(this._errorText, 'form__error-test-none', false);
+        }
+    }
 }
 
 export class Contacts extends Form<IContacts> {
 	protected _phoneInput: HTMLInputElement;
 	protected _emailInput: HTMLInputElement;
-	protected _nextButton: HTMLButtonElement;
 	protected _emailErrorMessage: HTMLElement;
 	protected _phoneErrorMessage: HTMLElement;
+	protected _submitButton: HTMLButtonElement
 	protected appState: AppState;
 
 	constructor(container: HTMLFormElement, events: IEvents, appState: AppState) {
@@ -85,7 +85,7 @@ export class Contacts extends Form<IContacts> {
 
 		this._phoneInput = container.elements.namedItem('phone') as HTMLInputElement;
 		this._emailInput = container.elements.namedItem('email') as HTMLInputElement;
-		this._nextButton = container.querySelector<HTMLButtonElement>('.paybtn');
+		this._submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
 		this._emailErrorMessage = this._emailInput.nextElementSibling as HTMLElement;
 		this._phoneErrorMessage = this._phoneInput.nextElementSibling as HTMLElement;
 
@@ -100,14 +100,14 @@ export class Contacts extends Form<IContacts> {
 			this.validateForm();
 		});
 
-		this._nextButton.addEventListener('click', () => {
-			if (!this._nextButton.disabled) {
-				events.emit('contacts:submit', {
-					email: this._emailInput.value,
-					phone: this._phoneInput.value,
-				});
-			}
-		});
+		this._submitButton.addEventListener('click', () => {
+            if (!this._submitButton.disabled) {
+                events.emit('contacts:submit', {
+                    email: this._emailInput.value,
+                    phone: this._phoneInput.value,
+                });
+            }
+        });
 
 		this.validateForm();
 	}
@@ -123,25 +123,25 @@ export class Contacts extends Form<IContacts> {
 	}
 
 	validateForm() {
-		const isValid = this.appState.validateContacts();
+        const isValid = this.appState.validateContacts();
 
-		if (isValid) {
-			this._nextButton.disabled = false;
-			this._emailErrorMessage.classList.add('form__error-test-none');
-			this._phoneErrorMessage.classList.add('form__error-test-none');
-		} else {
-			this._nextButton.disabled = true;
-			if (!this.appState.isValidEmail(this._emailInput.value)) {
-				this._emailErrorMessage.classList.remove('form__error-test-none');
-			} else {
-				this._emailErrorMessage.classList.add('form__error-test-none');
-			}
+        if (isValid) {
+            this.setDisabled(this._submitButton, false);
+            this.toggleClass(this._emailErrorMessage, 'form__error-test-none', true);
+            this.toggleClass(this._phoneErrorMessage, 'form__error-test-none', true);
+        } else {
+            this.setDisabled(this._submitButton, true);
+            if (!this.appState.isValidEmail(this._emailInput.value)) {
+                this.toggleClass(this._emailErrorMessage, 'form__error-test-none', false);
+            } else {
+                this.toggleClass(this._emailErrorMessage, 'form__error-test-none', true);
+            }
 
-			if (this._phoneInput.value.length !== 12) {
-				this._phoneErrorMessage.classList.remove('form__error-test-none');
-			} else {
-				this._phoneErrorMessage.classList.add('form__error-test-none');
-			}
-		}
-	}
+            if (this._phoneInput.value.length !== 12) {
+                this.toggleClass(this._phoneErrorMessage, 'form__error-test-none', false);
+            } else {
+                this.toggleClass(this._phoneErrorMessage, 'form__error-test-none', true);
+            }
+        }
+    }
 }

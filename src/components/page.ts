@@ -22,7 +22,7 @@ export class Page extends Component<IPage> {
 			this.events.emit('basket:open');
 		});
 
-		this.events.on('counter:changed', (data: { count: number }) => {
+		this.events.on('basket:changed', (data: { count: number }) => {
 			this.counter = data.count;
 		});
 	}

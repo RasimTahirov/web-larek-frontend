@@ -76,7 +76,7 @@ export class Card extends Component<IProduct> {
 
 		const categoryClass = categoryClassMap[value];
 		if (categoryClass) {
-			this._category.classList.add(categoryClass);
+			this.toggleClass(this._category, categoryClass, true);
 		}
 	}
 
