@@ -67,6 +67,9 @@ export interface IAction {
 
 export interface IFormValid {
 	valid: boolean;
+	address?: string
+	email?: string
+	phone?: string
 }
 
 export type Category =

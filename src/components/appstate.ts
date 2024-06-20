@@ -25,11 +25,12 @@ export class AppState extends Model<IAppState> {
 		);
 
 		if (existingItemIndex !== -1) {
-			this.basket[existingItemIndex].quantity = (this.basket[existingItemIndex].quantity || 0) + 1;
+			this.basket[existingItemIndex].quantity =
+				(this.basket[existingItemIndex].quantity || 0) + 1;
 		} else {
 			this.basket.push({ ...value, quantity: 1 });
 		}
-		
+
 		this.emitChanges('basket:changed', { basket: this.basket });
 	}
 
@@ -42,18 +43,13 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('preview:changed', item);
 	}
 
-	setPayment(payment: string) {
-		this.order.payment = payment;
-		this.emitChanges('order:changed', { payment });
-	}
-
 	getBasketAmount() {
 		return this.basket.length;
 	}
 
 	getTotalPrice() {
 		return this.basket.reduce(
-			(total, item) => total + (item.price || 0) * (item.quantity || 1), 
+			(total, item) => total + (item.price || 0) * (item.quantity || 1),
 			0
 		);
 	}
@@ -92,8 +88,9 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('basket:changed', { count: 0 });
 	}
 
-	updateOrderItems() {
-		this.order.items = this.basket.map((item) => item.id);
+	setPayment(payment: string) {
+		this.order.payment = payment;
+		this.emitChanges('order:changed', { payment });
 	}
 
 	setEmail(email: string) {
@@ -106,10 +103,9 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('order:changed', { phone });
 	}
 
-	setAddress(address: string) {
-		this.order.address = address;
-		this.emitChanges('order:changed', { address });
-	}
+  setAddress(address: string) {
+    this.order.address = address;
+  }
 
 	validateOrder() {
 		const isPaymentSelected = this.order.payment !== '';

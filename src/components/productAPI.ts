@@ -24,9 +24,11 @@ export class productAPI extends Api implements ProductService {
 	}
 
 	createOrder(order: IOrder): Promise<SuccessfulOrder> {
-		return this.post('/order', order).then((result: SuccessfulOrder) => ({
-			id: result.id,
-			total: result.total,
-		}));
+		// return this.post('/order', order).then((result: SuccessfulOrder) => ({
+		// 	id: result.id,
+		// 	total: result.total,
+		// }));
+
+		return this.post('/order', order).then((data: SuccessfulOrder) => data);
 	}
 }

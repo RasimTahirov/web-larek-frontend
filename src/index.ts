@@ -27,6 +27,14 @@ const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 
+const order = new OrderForm(cloneTemplate(orderTemplate), events);
+const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const success = new Success(cloneTemplate(successTemplate), {
+	onClick: () => {
+		modal.close();
+	},
+});
+
 api
 	.getProductList()
 	.then(appData.setCatalog.bind(appData))
@@ -40,7 +48,6 @@ events.on('items:changed', () => {
 		const cardCatalog = new Card(cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', item),
 		});
-		cardCatalog.isInBasket = appData.isItemInBasket(item);
 		return cardCatalog.render({
 			id,
 			category,
@@ -105,64 +112,62 @@ events.on('card:remove', (item: IProduct) => {
 });
 
 events.on('contact:open', () => {
-	const contactsModalContent = cloneTemplate(contactsTemplate);
-	modal.render({ content: contactsModalContent });
-	modal.open();
+	appData.setEmail(contacts.getEmail());
+	appData.setPhone(contacts.getPhone());
 
-	const formContainer = ensureElement<HTMLFormElement>('.form[name="contacts"]');
-	new Contacts(formContainer, events, appData);
+	modal.render({
+		content: contacts.render({
+			email: '',
+			phone: '',
+		}),
+	});
 });
 
 events.on('basket:open', () => {
 	const modalContent = basket.render();
-	modal.render({ content: modalContent });
+	modal.render({
+		content: modalContent,
+	});
 });
 
 events.on('order:open', () => {
-	modal.render({ content: cloneTemplate(orderTemplate) });
-	new OrderForm(ensureElement<HTMLFormElement>('.form[name="order"]'), events, appData);
-	modal.open();
+	appData.setAddress(order.getAddress())
+	
+	modal.render({
+		content: order.render({
+			address: '',
+		}),
+	});
 });
 
 events.on('order:payment', (event: { payment: string }) => {
 	appData.setPayment(event.payment);
 });
 
-events.on('order:address', (event: { address: string }) => {
-	appData.setAddress(event.address);
-});
+events.on('contacts:submit', () => {
+	appData.setPhone(contacts.getPhone());
+	appData.setEmail(contacts.getEmail());
+	appData.setAddress(order.getAddress());
+	appData.order.total = appData.getTotalPrice();
+	
+	appData.order.items = appData.basket.map((item) => item.id);
 
-events.on('contacts:submit', (data: { email: string; phone: string }) => {
-	if (data && data.email && data.phone) {
-		appData.setEmail(data.email);
-		appData.setPhone(data.phone);
-		appData.updateOrderItems();
+	console.log(appData.order);
 
-		const totalPrice = appData.getTotalPrice();
-		appData.order.total = totalPrice;
-
-		console.log(appData.order);
-
-		api
-			.createOrder(appData.order)
-			.then((result) => {
-				appData.clearBasket();
-
-				const success = new Success(cloneTemplate(successTemplate), {
-					onClick: () => modal.close(),
-				});
-
-				modal.render({
-					content: success.render({
-						total: result.total,
-					}),
-				});
-				appData.resetOrder();
-			})
-			.catch((err) => {
-				console.error(err);
+	api
+		.createOrder(appData.order)
+		.then((result) => {
+			appData.clearBasket();
+			modal.render({
+				content: success.render({
+					total: result.total,
+				}),
 			});
-	}
+			appData.resetOrder();
+		})
+		.catch((err) => {
+			console.error(err);
+		});
 });
 
 events.on('modal:open', () => (page.locked = true));
