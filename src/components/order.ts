@@ -39,7 +39,7 @@ export class OrderForm extends Form<IPayment> {
 		});
 	}
 
-		getAddress(): string {
+	getAddress(): string {
 		return this._addressInput.value;
 	}
 
@@ -47,21 +47,6 @@ export class OrderForm extends Form<IPayment> {
 		this._addressInput.value = value;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export class Contacts extends Form<IContacts> {
 	protected _phoneInput: HTMLInputElement;
@@ -71,16 +56,9 @@ export class Contacts extends Form<IContacts> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._phoneInput = container.elements.namedItem(
-			'phone'
-		) as HTMLInputElement;
-		this._emailInput = container.elements.namedItem(
-			'email'
-		) as HTMLInputElement;
-		this._submitButton = ensureElement<HTMLButtonElement>(
-			'button[type=submit]',
-			this.container
-		);
+		this._phoneInput = container.elements.namedItem('phone') as HTMLInputElement;
+		this._emailInput = container.elements.namedItem('email') as HTMLInputElement;
+		this._submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
 
 		this._submitButton.addEventListener('click', (event) => {
 			event.preventDefault();
@@ -103,6 +81,6 @@ export class Contacts extends Form<IContacts> {
 	}
 
 	getPhone(): string {
-		return this._phoneInput.value
+		return this._phoneInput.value;
 	}
 }
