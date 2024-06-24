@@ -39,6 +39,10 @@ export class OrderForm extends Form<IPayment> {
 		});
 	}
 
+	// getPaymentSelected(): string {
+	// 	return this._paymentContainer;
+	// }
+
 	getAddress(): string {
 		return this._addressInput.value;
 	}
@@ -60,12 +64,12 @@ export class Contacts extends Form<IContacts> {
 		this._emailInput = container.elements.namedItem('email') as HTMLInputElement;
 		this._submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
 
-		this._submitButton.addEventListener('click', (event) => {
-			event.preventDefault();
-			if (!this._submitButton.disabled) {
-				events.emit('contacts:submit');
-			}
-		});
+		// this._submitButton.addEventListener('click', (event) => {
+		// 	event.preventDefault();
+		// 	if (!this._submitButton.disabled) {
+		// 		events.emit('contacts:submit');
+		// 	}
+		// });
 	}
 
 	set email(value: string) {

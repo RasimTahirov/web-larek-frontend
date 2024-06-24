@@ -3,7 +3,7 @@
 
 .form {
   @include mixins.flex(column);
-  gap: 8.5rem;
+  gap: 11rem;
   border-radius: 3rem;
 
   &__label {

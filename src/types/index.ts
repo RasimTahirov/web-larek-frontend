@@ -16,24 +16,33 @@ export interface IAppState {
 	order: string | null;
 }
 
+// export type Payments = 'card' | 'cash'
+
 export interface IPayment {
-	payment: string;
-	address: string;
+	payment?: string;
+	address?: string;
 }
 
 export interface IContacts extends IPayment, IOrder {
-	email: string;
-	phone: string;
+	email?: string;
+	phone?: string;
 }
 
 export interface IOrder {
-	payment: string;
-	address: string;
-	email: string;
-	phone: string;
+	payment?: string;
+	address?: string;
+	email?: string;
+	phone?: string;
 	items?: string[];
 	total?: number;
+
+	title?: string
 }
+
+// export interface IOrders extends IContacts, IPayment {
+// 	items: string[],
+// 	total: number ;
+// }
 
 export interface IBasket {
 	items: IProduct[];
@@ -67,9 +76,10 @@ export interface IAction {
 
 export interface IFormValid {
 	valid: boolean;
-	address?: string
-	email?: string
-	phone?: string
+	address?: string;
+	email?: string;
+	phone?: string;
+	errors: string;
 }
 
 export type Category =
@@ -78,3 +88,5 @@ export type Category =
 	| 'дополнительное'
 	| 'кнопка'
 	| 'хард-скил';
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
