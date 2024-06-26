@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 import { AppState } from './components/appstate';
 import { Contacts, OrderForm } from './components/order';
-import { IContacts, IOrder, IPayment, IProduct } from './types';
+import { IOrder, IProduct } from './types';
 import { EventEmitter } from './components/base/events';
 import { Card } from './components/card';
 import { Modal } from './components/modal';
@@ -120,36 +120,37 @@ events.on('basket:open', () => {
 });
 
 events.on('order:open', () => {
-	appData.setAddress(order.getAddress());
+	appData.validateOrder();
 
 	modal.render({
 		content: order.render({
 			address: '',
 			payment: '',
 			valid: false,
-			errors: order.errors
+			errors: appData.formErrors.payment,
 		}),
 	});
 });
 
 events.on('contact:open', () => {
-	appData.setEmail(contacts.getEmail());
-	appData.setPhone(contacts.getPhone());
+	appData.validateContact();
 
 	modal.render({
 		content: contacts.render({
 			email: '',
 			phone: '',
-			valid: true,
-			errors: contacts.errors
+			valid: false,
+			errors: appData.formErrors.phone,
 		}),
 	});
 });
 
 events.on('orderFormError:change', (errors: Partial<IOrder>) => {
-  const { payment, address } = errors;
-  order.valid = !payment && !address
-  order.errors = Object.values({ payment, address }).filter(i => !!i).join('; ');
+	const { payment, address } = errors;
+	order.valid = !payment && !address;
+	order.errors = Object.values({ payment, address })
+		.filter((i) => !!i)
+		.join('; ');
 });
 
 events.on('order.address:change', (data: { value: string }) => {
@@ -161,27 +162,24 @@ events.on('order:payment', (data: { payment: string }) => {
 });
 
 events.on('contactFormError:change', (errors: Partial<IOrder>) => {
-  const { email, phone } = errors
-  contacts.valid = !email && !phone
-  contacts.errors = Object.values({ phone, email }).filter(i => !!i).join('; ')
-}); 
+	const { email, phone } = errors;
+	contacts.valid = !email && !phone;
+	contacts.errors = Object.values({ phone, email })
+		.filter((i) => !!i)
+		.join('; ');
+});
 
-events.on('contacts.email:change', (data: {value:string}) => {
+events.on('contacts.email:change', (data: { value: string }) => {
 	appData.setEmail(data.value);
 });
 
-//изменение поля phone
-events.on('contacts.phone:change', (data: {value:string}) => {
+events.on('contacts.phone:change', (data: { value: string }) => {
 	appData.setPhone(data.value);
-})
-
+});
 
 events.on('contacts:submit', () => {
-	appData.setPhone(contacts.getPhone());
-	appData.setEmail(contacts.getEmail());
-	appData.setAddress(order.getAddress());
 	appData.order.total = appData.getTotalPrice();
-	
+
 	appData.order.items = appData.basket.map((item) => item.id);
 
 	console.log(appData.order);

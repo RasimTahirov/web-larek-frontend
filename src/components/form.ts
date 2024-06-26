@@ -12,7 +12,6 @@ export class Form<T> extends Component<IFormValid> {
 
 		this._submit = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
 		this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
-		// this._errors = container.querySelector('.form__errors')
 
 		this.container.addEventListener('input', (events) => {
 			const target = events.target as HTMLInputElement;
@@ -28,7 +27,10 @@ export class Form<T> extends Component<IFormValid> {
 	}
 
 	protected onInputChange(field: keyof T, value: string) {
-		this.events.emit(`${this.container.name}.${String(field)}:change`, {field, value});
+		this.events.emit(`${this.container.name}.${String(field)}:change`, {
+			field,
+			value,
+		});
 	}
 
 	set errors(value: string) {
@@ -40,18 +42,11 @@ export class Form<T> extends Component<IFormValid> {
 	}
 
 	render(state: Partial<T> & IFormValid) {
-		const { valid, errors, ...inputs } = state;
+		const { valid = false, errors = '', ...inputs } = state;
 		super.render({ valid, errors });
 		Object.assign(this, inputs);
+		this.errors = errors;
+		this.valid = valid;
 		return this.container;
 	}
 }
-
-// set errors(value: string) {
-// 	this.setText(this._errors, value);
-// 	if (value) {
-// 		this._errors.classList.remove('form__error-test-none');
-// 	} else {
-// 		this._errors.classList.add('form__error-test-none');
-// 	}
-// }
