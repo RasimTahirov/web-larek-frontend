@@ -33,8 +33,6 @@ export interface IOrder {
 	phone?: string;
 	items?: string[];
 	total?: number;
-
-	title?: string;
 }
 
 export interface IBasket {
