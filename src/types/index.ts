@@ -16,9 +16,7 @@ export interface IAppState {
 	order: string | null;
 }
 
-// export type Payments = 'card' | 'cash'
-
-export interface IPayment {
+export interface IPayment extends IOrder {
 	payment?: string;
 	address?: string;
 }
@@ -36,13 +34,8 @@ export interface IOrder {
 	items?: string[];
 	total?: number;
 
-	title?: string
+	title?: string;
 }
-
-// export interface IOrders extends IContacts, IPayment {
-// 	items: string[],
-// 	total: number ;
-// }
 
 export interface IBasket {
 	items: IProduct[];

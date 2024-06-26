@@ -132,7 +132,7 @@ events.on('order:open', () => {
 	});
 });
 
-events.on('contact:open', () => {
+events.on('order:submit', () => {
 	appData.validateContact();
 
 	modal.render({
@@ -181,8 +181,6 @@ events.on('contacts:submit', () => {
 	appData.order.total = appData.getTotalPrice();
 
 	appData.order.items = appData.basket.map((item) => item.id);
-
-	console.log(appData.order);
 
 	api
 		.createOrder(appData.order)
